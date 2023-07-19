@@ -1,0 +1,9 @@
+sudo python3 manage.py makemigrations
+
+sudo python3 manage.py showmigrations
+
+sudo python3 manage.py sqlmigrate events 0001_initial
+
+sudo python3 manage.py migrate
+
+sudo python3 manage.py createsuperuser

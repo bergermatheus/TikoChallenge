@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  backend:
+    restart: always
+    container_name: django
+    command : bash -c "python manage.py runserver 0.0.0.0:8000"
+    build:
+      context: ./webserver/
+      dockerfile: Dockerfile
+    volumes:
+      - ./webserver:/TikoChallenge/webserver
+    ports:
+      - "8000:8000"
