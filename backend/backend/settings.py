@@ -32,14 +32,17 @@ AUTH_USER_MODEL = 'events.User'
 # Application definition
 
 INSTALLED_APPS = [
-    'events',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'events',
 ]
+
+DATETIME_FORMAT = 'Y-m-d H:i:s'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
