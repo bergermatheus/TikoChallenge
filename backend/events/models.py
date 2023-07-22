@@ -29,6 +29,7 @@ class Event(models.Model):
     description = models.TextField(blank=True, null=True, verbose_name='description')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', verbose_name='user')
     subscribers = models.ManyToManyField(User, related_name='subscribers', blank=True)
+    max_attendees = models.PositiveIntegerField(default=0)
     start = models.DateTimeField(verbose_name='event start')
     end = models.DateTimeField(verbose_name='event end')
 

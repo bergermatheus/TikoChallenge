@@ -10,10 +10,10 @@ class EventForm(forms.ModelForm):
     """Events form."""
 
     update = forms.UUIDField(required=False)
-    
+
     class Meta:
         model = Event
-        fields = ['name', 'description', 'start', 'end']
+        fields = ['name', 'description', 'start', 'end', 'max_attendees']
         
         widgets = {
             'start': forms.DateTimeInput(attrs={'format': 'Y-m-d H:i:s'}),

@@ -1,7 +1,6 @@
 """Events views for the project."""
 from rest_framework.authentication import get_authorization_header
 from rest_framework.response import Response
-from django.core.serializers import serialize
 from rest_framework.views import APIView
 from rest_framework.exceptions import APIException, AuthenticationFailed
 
@@ -45,23 +44,87 @@ class LoginAPIView(APIView):
         return response
 
 
+class RefreshAPIView(APIView):
+    def post(self, request):
+        """POST Method"""
+        refresh_token = request.COOKIES.get('refresh_token')
+        id = decode_refresh_token(refresh_token.split("'")[1])
+        access_token = create_access_token(id)
+        return Response({
+            'token': access_token,
+        })
+
+
 class EventAPIView(APIView):
     def get(self, request):
-        """GET Method"""
+        """GET method."""
         auth = get_authorization_header(request).split()
         if not auth:
             raise AuthenticationFailed('Unauthenticated')
         token = auth[1].decode('utf-8')
         id = decode_access_token(token)
+        user = User.objects.filter(pk=id).first()
 
         events = Event.objects.all()
         events_list = [{
             'id': event.id,
             'name': event.name,
-            'description': event.description
+            'description': event.description,
+            'subscribers': list(event.subscribers.all().values('name')),
+            'max_attendees': event.max_attendees,
         } for event in events]
-        return Response({'success': True, 'list': events_list})
+
+        events = Event.objects.filter(user=user)
+        my_events_list = [{
+            'id': event.id,
+            'name': event.name,
+            'description': event.description,
+            'subscribers': list(event.subscribers.all().values('name')),
+            'max_attendees': event.max_attendees,
+        } for event in events]
+
+        return Response({
+            'success': True,
+            'all_events': events_list,
+            'my_events': my_events_list,
+        })
     
+    def post(self, request, *args, **kwargs):
+        """POST method."""
+        auth = get_authorization_header(request).split()
+        if not auth:
+            raise AuthenticationFailed('Unauthenticated')
+        
+        token = auth[1].decode('utf-8')
+        id = decode_access_token(token)
+        user = User.objects.filter(pk=id).first()
+        event = Event.objects.filter(id=request.data['id'])
+        if (event.exists() and
+                eval(request.data['subscribe']) and
+                event[0].subscribers.count() < event[0].max_attendees):
+            event = event[0]
+            event.subscribers.add(user)
+            return Response({
+                'success': True,
+                'subscribed': True,
+            })
+        elif event.exists() and not eval(request.data['subscribe']):
+            event[0].subscribers.remove(user)
+            event[0].save()
+            return Response({
+                'success': True,
+                'subscribed': False,
+            })
+        else:
+            return Response({
+                'success': False,
+                'reason': 
+                {
+                    'event_exists': event.exists(),
+                    'max_attendees': event[0].subscribers.count() >= event[0].max_attendees,
+                }
+            })
+
 
 class EventCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
@@ -79,14 +142,19 @@ class EventCreateAPIView(APIView):
             return Response({'success': False})
         
 
-        event = Event.objects.filter(id=form.cleaned_data['update'])
-        if event.exists():
+        event = Event.objects.filter(
+            id=form.cleaned_data['update'], user=user
+        )
+        if form.cleaned_data['update'] and not event.exists():
+            raise AuthenticationFailed('Not allowed to update')
+        elif event.exists():
             Event.objects.filter(id=form.cleaned_data['update']).update(
                 name=form.cleaned_data['name'],
                 description=form.cleaned_data['description'],
                 user=user,
                 start=form.cleaned_data['start'],
                 end=form.cleaned_data['end'],
+                max_attendees=form.cleaned_data['max_attendees'],
             )
         else:
             event = Event.objects.create(
@@ -95,19 +163,8 @@ class EventCreateAPIView(APIView):
                 user=user,
                 start=form.cleaned_data['start'],
                 end=form.cleaned_data['end'],
+                max_attendees=form.cleaned_data['max_attendees'],
             )
         return Response({
-            'success': True,
-            'name': event[0].name,
-        })
-        
-
-class RefreshAPIView(APIView):
-    def post(self, request):
-        """POST Method"""
-        refresh_token = request.COOKIES.get('refresh_token')
-        id = decode_refresh_token(refresh_token.split("'")[1])
-        access_token = create_access_token(id)
-        return Response({
-            'token': access_token,
+            'success': True
         })
