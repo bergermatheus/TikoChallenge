@@ -86,6 +86,32 @@ This API uses JWT (JSON Web Tokens) for authentication. To access protected endp
     "max_attendees": 150
     }
 
+### Update Event
+- **Description:** Update a event.
+- **URL:** `/api/create-events/`
+- **Method:** POST
+- **Authentication:** Yes
+- **Parameters:**
+- `update`: the ID of the event you want to update,
+- `name`: Name of the event (string, required)
+- `description`: Description of the event (string, required)
+- `start_date`: Start date and time of the event (datetime, required)
+- `end_date`: End date and time of the event (datetime, required)
+- `max_attendees`: Maximum number of attendees for the event (integer, required)
+- **Request:**
+    POST /api/create-events/
+    Content-Type: application/json
+    Authorization: Bearer YOUR_JWT_TOKEN
+
+    {
+    "update": "id_string,
+    "name": "Event A",
+    "description": "Lorem ipsum...",
+    "start_date": "2023-08-15 10:00:00",
+    "end_date": "2023-08-17 18:00:00",
+    "max_attendees": 150
+    }
+
 ### Register
 - **Description:** Register a new user.
 - **URL:** `/api/register/`
@@ -105,6 +131,8 @@ Content-Type: application/json
 "password": "password123"
 }
 
+
+
 ### Login
 - **Description:** Log in an existing user and retrieve an access token.
 - **URL:** `/api/login/`
@@ -123,3 +151,8 @@ Content-Type: application/json
 "password": "password123"
 }
 
+## Access Swagger UI
+With the development server running, you can now access the Swagger UI in your web browser. Open your browser and go to the following URL:
+
+`http://0.0.0.0:8000/api/swagger/`
+You should see the Swagger UI interface displaying your API's endpoints and documentation.
