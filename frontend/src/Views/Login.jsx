@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Col, Button, Row, Container, Card, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function Login() {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -20,18 +19,18 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    axios.post('http://localhost:8000/api/login/', { 'username': email, 'password': password })
-    .then((response) => {
-      console.log(response.data);
-      const token = response.data.token;
-      localStorage.setItem('access_token', token);
-
-      // Redirect to another page after successful login
-      navigate('/all-events');
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    axios.post('http://0.0.0.0:8000/api/login/', { 'username': email, 'password': password })
+      .then((response) => {
+        console.log(response.data);
+        const token = response.data.token;
+        localStorage.setItem('access_token', token);
+        localStorage.setItem('isLoggedIn', true);
+        // Redirect to another page after successful login
+        navigate('/all-events');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
 
@@ -68,7 +67,7 @@ function Login() {
                         />
                       </Form.Group>
                       <div className="d-grid">
-                        <Button 
+                        <Button
                           variant="secondary"
                           type="submit"
                           onClick={handleSubmit}>

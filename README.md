@@ -1,37 +1,125 @@
-# TikoChallenge
+# API Documentation
+
 The task consists in creating a Rest API using Django to create an Event manager app. It should allow users to create a personal account, log in, and create, edit, fetch, and register to attend events. Each event should have at least a name, a description, a start date and end date and a list of attendees.
 
 
-[x] Users must be able to register an account
+## Introduction
+This API provides endpoints to manage events and attendees for a event. All the application was dockerized, so you can clone the git repository:
 
-[x] Users must be able to log in into their account
+```
+git clone https://github.com/bergermatheus/TikoChallenge.git
+```
 
-[x] A system of token rotation must be implemented. For this the API needs to provide a user with access_token and a refresh_token, as well as a way to refresh and validate the access_token. The lifetime of the access_token should be 1 hour and the lifetime of the refresh_token 1 day
+And then inside of the folder TikoChallenge you will find a file docker-compose.yaml.
+In this place you have to run the following command:
 
-[x] Users must be able to create events in the app's database (slqlite)
+```
+docker-compose up --build
+```
+Take a coffe and wait until the end of the building.
 
-[x] Users must be able to see the list of events they have created
+To stop the app you have to press ctrl+c on your terminal, then:
 
-[x] Users must be able to see a list of all events
+```
+docker-compose down
+```
+If you want to run again:
 
-[x] Users must be able to edit the events they have created but not the ones created by other users
+```
+docker-compose up
+```
 
-[x] Users must be able to register to an event or un-register. This can only be done in future events and not in past events.
+## Base URL
+The base URL for this API is `http://0.0.0.0:8000/`. The base URL for the frontend is `http://0.0.0.0:3000/`.
 
- 
+## Authentication
+This API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints, you must include the JWT token in the `Authorization` header of your requests.
 
-Not required but nice to have:
+## Endpoints
 
- 
+### Get All Events
+- **Description:** Retrieve a list of all events.
+- **URL:** `/api/events/`
+- **Method:** GET
+- **Authentication:** Yes
+- **Parameters:** None
+- **Request:**
+    GET /api/events/
+    Authorization: Bearer YOUR_JWT_TOKEN
+- **Response:**
+    Status: 200 OK
+    Content-Type: application/json
 
-- Documentation of your code
+    [
+    {
+    "id": 1,
+    "name": "Conference A",
+    "description": "Lorem ipsum...",
+    "start_date": "2023-07-24T09:00:00Z",
+    "end_date": "2023-07-25T17:00:00Z",
+    "max_attendees": 100,
+    "subscribers": [1, 2, 3]
+    },
+    // more events...
+    ]
+### Create Event
+- **Description:** Create a new event.
+- **URL:** `/api/create-events/`
+- **Method:** POST
+- **Authentication:** Yes
+- **Parameters:**
+- `name`: Name of the event (string, required)
+- `description`: Description of the event (string, required)
+- `start_date`: Start date and time of the event (datetime, required)
+- `end_date`: End date and time of the event (datetime, required)
+- `max_attendees`: Maximum number of attendees for the event (integer, required)
+- **Request:**
+    POST /api/create-events/
+    Content-Type: application/json
+    Authorization: Bearer YOUR_JWT_TOKEN
 
-- API docs (swagger or other)
+    {
+    "name": "Event A",
+    "description": "Lorem ipsum...",
+    "start_date": "2023-08-15 10:00:00",
+    "end_date": "2023-08-17 18:00:00",
+    "max_attendees": 150
+    }
 
-- Tests
+### Register
+- **Description:** Register a new user.
+- **URL:** `/api/register/`
+- **Method:** POST
+- **Authentication:** No
+- **Parameters:**
+  - `username`: Username of the user (string, required)
+  - `email`: Email address of the user (string, required)
+  - `password`: Password for the user (string, required)
 
-[x] Add logic to manage an event capacity: if event reaches maximum number of registered attendees, an error should be returned to a user trying to register
+POST /api/register/
+Content-Type: application/json
 
-- Add some  filtering to endpoints retrieving events (e.g. date , type, status, past events, future events, etc)
+{
+"username": "john_doe",
+"email": "john.doe@example.com",
+"password": "password123"
+}
 
-- Create a frontend to consume the API
+### Login
+- **Description:** Log in an existing user and retrieve an access token.
+- **URL:** `/api/login/`
+- **Method:** POST
+- **Authentication:** No
+- **Parameters:**
+- `username`: email of the user (string, required)
+- `password`: Password of the user (string, required)
+- **Request:**
+
+POST /api/login/
+Content-Type: application/json
+
+{
+"username": "john_doe",
+"password": "password123"
+}
+

@@ -27,7 +27,7 @@ const AllEvents = () => {
         },
       };
 
-      const response = await axios.get('http://localhost:8000/api/events/', config);
+      const response = await axios.get('http://0.0.0.0:8000/api/events/', config);
       setData(response.data);
       console.log(response.data);
     } catch (error) {
@@ -60,7 +60,7 @@ const AllEvents = () => {
       };
 
       // Send the POST request to the server
-      const response = await axios.post('http://localhost:8000/api/events/', postData, config);
+      const response = await axios.post('http://0.0.0.0:8000/api/events/', postData, config);
 
       if (!response.data.success && response.data.reason.max_attendees) {
         // Subscription failed, set the error message
@@ -93,7 +93,7 @@ const AllEvents = () => {
       };
 
       // Send the POST request to the server
-      await axios.post('http://localhost:8000/api/events/', postData, config);
+      await axios.post('http://0.0.0.0:8000/api/events/', postData, config);
 
       // Fetch the updated events data
       await fetchEvents();

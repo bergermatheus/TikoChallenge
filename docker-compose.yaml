@@ -1,0 +1,38 @@
+version: "3.2"
+services:
+  
+  backend:
+    restart: always
+    container_name: django
+    command : bash -c "python manage.py runserver 0.0.0.0:8000"
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/TikoChallenge/backend
+    ports:
+      - "8000:8000"
+
+    networks:
+      - db-net
+
+  frontend:
+    restart: always
+    command : npm start
+    container_name: react
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/TikoChallenge/frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    depends_on:
+      - backend
+    networks:
+      - db-net
+
+networks:
+  db-net:
+    driver: bridge
