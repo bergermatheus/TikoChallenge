@@ -4,10 +4,33 @@ The task consists in creating a Rest API using Django to create an Event manager
 
 
 ## Introduction
-This API provides endpoints to manage events and attendees for a event.
+This API provides endpoints to manage events and attendees for a event. All the application was dockerized, so you can clone the git repository:
+
+```
+git clone https://github.com/bergermatheus/TikoChallenge.git
+```
+
+And then inside of the folder TikoChallenge you will find a file docker-compose.yaml.
+In this place you have to run the following command:
+
+```
+docker-compose up --build
+```
+Take a coffe and wait until the end of the building.
+
+To stop the app you have to press ctrl+c on your terminal, then:
+
+```
+docker-compose down
+```
+If you want to run again:
+
+```
+docker-compose up
+```
 
 ## Base URL
-The base URL for this API is `https://0.0.0.0:8000/`.
+The base URL for this API is `http://0.0.0.0:8000/`. The base URL for the frontend is `http://0.0.0.0:3000/`.
 
 ## Authentication
 This API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints, you must include the JWT token in the `Authorization` header of your requests.
@@ -35,7 +58,7 @@ This API uses JWT (JSON Web Tokens) for authentication. To access protected endp
     "start_date": "2023-07-24T09:00:00Z",
     "end_date": "2023-07-25T17:00:00Z",
     "max_attendees": 100,
-    "attendees": [1, 2, 3]
+    "subscribers": [1, 2, 3]
     },
     // more events...
     ]
@@ -51,14 +74,52 @@ This API uses JWT (JSON Web Tokens) for authentication. To access protected endp
 - `end_date`: End date and time of the event (datetime, required)
 - `max_attendees`: Maximum number of attendees for the event (integer, required)
 - **Request:**
-    POST /api/events/
+    POST /api/create-events/
     Content-Type: application/json
     Authorization: Bearer YOUR_JWT_TOKEN
 
     {
     "name": "Event A",
     "description": "Lorem ipsum...",
-    "start_date": "2023-08-15T10:00:00Z",
-    "end_date": "2023-08-17T18:00:00Z",
+    "start_date": "2023-08-15 10:00:00",
+    "end_date": "2023-08-17 18:00:00",
     "max_attendees": 150
     }
+
+### Register
+- **Description:** Register a new user.
+- **URL:** `/api/register/`
+- **Method:** POST
+- **Authentication:** No
+- **Parameters:**
+  - `username`: Username of the user (string, required)
+  - `email`: Email address of the user (string, required)
+  - `password`: Password for the user (string, required)
+
+POST /api/register/
+Content-Type: application/json
+
+{
+"username": "john_doe",
+"email": "john.doe@example.com",
+"password": "password123"
+}
+
+### Login
+- **Description:** Log in an existing user and retrieve an access token.
+- **URL:** `/api/login/`
+- **Method:** POST
+- **Authentication:** No
+- **Parameters:**
+- `username`: email of the user (string, required)
+- `password`: Password of the user (string, required)
+- **Request:**
+
+POST /api/login/
+Content-Type: application/json
+
+{
+"username": "john_doe",
+"password": "password123"
+}
+
