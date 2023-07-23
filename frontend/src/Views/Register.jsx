@@ -41,7 +41,7 @@ function Register() {
       <Container>
         <Row className="vh-100 d-flex justify-content-center align-items-center">
           <Col md={8} lg={6} xs={12}>
-            <div className="border border-3 border-primary"></div>
+            <div className="border border-3 border-secondary"></div>
             <Card className="shadow">
               <Card.Body>
                 <div className="mb-3 mt-md-4">
@@ -91,7 +91,7 @@ function Register() {
                       </Form.Group>
                       <div className="d-grid">
                       <Button 
-                          variant="primary"
+                          variant="secondary"
                           type="submit"
                           onClick={handleSubmit}>
                           Register
