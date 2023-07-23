@@ -27,7 +27,7 @@ function Login() {
       localStorage.setItem('access_token', token);
 
       // Redirect to another page after successful login
-      navigate('/home');
+      navigate('/all-events');
     })
     .catch((error) => {
       console.error(error);

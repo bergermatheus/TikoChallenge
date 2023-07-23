@@ -72,6 +72,8 @@ class EventAPIView(APIView):
             'description': event.description,
             'subscribers': list(event.subscribers.all().values('name')),
             'max_attendees': event.max_attendees,
+            'start': event.start,
+            'end': event.end,
         } for event in events]
 
         events = Event.objects.filter(user=user)
@@ -81,6 +83,8 @@ class EventAPIView(APIView):
             'description': event.description,
             'subscribers': list(event.subscribers.all().values('name')),
             'max_attendees': event.max_attendees,
+            'start': event.start,
+            'end': event.end,
         } for event in events]
 
         return Response({
