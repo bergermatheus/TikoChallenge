@@ -62,10 +62,11 @@ const AllEvents = () => {
       // Send the POST request to the server
       const response = await axios.post('http://0.0.0.0:8000/api/events/', postData, config);
 
-      if (!response.data.success && response.data.reason.max_attendees) {
+      if (!response.data.success) {
         // Subscription failed, set the error message
-        setError('Subscription failed. The event is full.');
-      } else {
+        setError(response.data.reason);
+      } 
+      else {
         // Subscription successful, fetch the updated events data
         await fetchEvents();
       }

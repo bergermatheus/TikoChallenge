@@ -1,4 +1,5 @@
 """Events views for the project."""
+from django.utils import timezone
 from rest_framework.authentication import get_authorization_header
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -98,35 +99,47 @@ class EventAPIView(APIView):
         auth = get_authorization_header(request).split()
         if not auth:
             raise AuthenticationFailed('Unauthenticated')
-        
+
         token = auth[1].decode('utf-8')
         id = decode_access_token(token)
         user = User.objects.filter(pk=id).first()
         event = Event.objects.filter(id=request.data['id'])
-        if (event.exists() and
-                eval(request.data['subscribe']) and
-                event[0].subscribers.count() < event[0].max_attendees):
-            event = event[0]
+
+        if not event.exists():
+            return Response({
+                'success': False,
+                'reason': 'Event does not exist.',
+            })
+
+        event = event[0]
+
+        # Check if the event is over
+        current_datetime = timezone.now()
+        if event.end < current_datetime:
+            return Response({
+                'success': False,
+                'reason': 'Event is over. Cannot subscribe.',
+            })
+
+        # Check if the event is at max attendees
+        if event.subscribers.count() >= event.max_attendees:
+            return Response({
+                'success': False,
+                'reason': 'Event is already at maximum attendees. Cannot subscribe.',
+            })
+
+        if eval(request.data['subscribe']):
             event.subscribers.add(user)
             return Response({
                 'success': True,
                 'subscribed': True,
             })
-        elif event.exists() and not eval(request.data['subscribe']):
-            event[0].subscribers.remove(user)
-            event[0].save()
+        else:
+            event.subscribers.remove(user)
+            event.save()
             return Response({
                 'success': True,
                 'subscribed': False,
-            })
-        else:
-            return Response({
-                'success': False,
-                'reason': 
-                {
-                    'event_exists': event.exists(),
-                    'max_attendees': event[0].subscribers.count() >= event[0].max_attendees,
-                }
             })
 
 
