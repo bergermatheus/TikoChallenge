@@ -37,7 +37,7 @@ const MyEventsView = () => {
         },
       };
 
-      const response = await axios.get('http://localhost:8000/api/events/', config);
+      const response = await axios.get('http://0.0.0.0:8000/api/events/', config);
       setData(response.data);
       console.log(response.data);
     } catch (error) {

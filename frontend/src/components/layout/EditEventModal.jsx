@@ -39,7 +39,7 @@ const EditEventModal = ({ event, show, onClose, onFormSubmit }) => {
       };
 
       // Send the POST request to update the event
-      const response = await axios.post('http://localhost:8000/api/create-events/', postData, config);
+      const response = await axios.post('http://0.0.0.0:8000/api/create-events/', postData, config);
 
       console.log(response.data);
       

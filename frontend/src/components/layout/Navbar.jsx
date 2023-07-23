@@ -1,25 +1,22 @@
-import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
-
-const NavigationBar = () => {
-  const location = useLocation();
+function NavigationBar() {
   const navigate = useNavigate();
-  const isLoginView = location.pathname === '/login';
-  const isRegisterView = location.pathname === '/register';
+  const isLoggedIn = localStorage.getItem('isLoggedIn') || false;
 
   const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
     // Delete the access token from localStorage
     localStorage.removeItem('access_token');
-
     // Redirect to the login page after logout
     navigate('/login');
   };
 
-  if (isLoginView || isRegisterView) {
+  if (!isLoggedIn) {
     return null; // Hide the navbar on the login view
   }
 

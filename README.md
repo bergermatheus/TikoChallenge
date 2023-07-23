@@ -1,37 +1,64 @@
-# TikoChallenge
+# API Documentation
+
 The task consists in creating a Rest API using Django to create an Event manager app. It should allow users to create a personal account, log in, and create, edit, fetch, and register to attend events. Each event should have at least a name, a description, a start date and end date and a list of attendees.
 
 
-[x] Users must be able to register an account
+## Introduction
+This API provides endpoints to manage events and attendees for a event.
 
-[x] Users must be able to log in into their account
+## Base URL
+The base URL for this API is `https://0.0.0.0:8000/`.
 
-[x] A system of token rotation must be implemented. For this the API needs to provide a user with access_token and a refresh_token, as well as a way to refresh and validate the access_token. The lifetime of the access_token should be 1 hour and the lifetime of the refresh_token 1 day
+## Authentication
+This API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints, you must include the JWT token in the `Authorization` header of your requests.
 
-[x] Users must be able to create events in the app's database (slqlite)
+## Endpoints
 
-[x] Users must be able to see the list of events they have created
+### Get All Events
+- **Description:** Retrieve a list of all events.
+- **URL:** `/api/events/`
+- **Method:** GET
+- **Authentication:** Yes
+- **Parameters:** None
+- **Request:**
+    GET /api/events/
+    Authorization: Bearer YOUR_JWT_TOKEN
+- **Response:**
+    Status: 200 OK
+    Content-Type: application/json
 
-[x] Users must be able to see a list of all events
+    [
+    {
+    "id": 1,
+    "name": "Conference A",
+    "description": "Lorem ipsum...",
+    "start_date": "2023-07-24T09:00:00Z",
+    "end_date": "2023-07-25T17:00:00Z",
+    "max_attendees": 100,
+    "attendees": [1, 2, 3]
+    },
+    // more events...
+    ]
+### Create Event
+- **Description:** Create a new event.
+- **URL:** `/api/create-events/`
+- **Method:** POST
+- **Authentication:** Yes
+- **Parameters:**
+- `name`: Name of the event (string, required)
+- `description`: Description of the event (string, required)
+- `start_date`: Start date and time of the event (datetime, required)
+- `end_date`: End date and time of the event (datetime, required)
+- `max_attendees`: Maximum number of attendees for the event (integer, required)
+- **Request:**
+    POST /api/events/
+    Content-Type: application/json
+    Authorization: Bearer YOUR_JWT_TOKEN
 
-[x] Users must be able to edit the events they have created but not the ones created by other users
-
-[x] Users must be able to register to an event or un-register. This can only be done in future events and not in past events.
-
- 
-
-Not required but nice to have:
-
- 
-
-- Documentation of your code
-
-- API docs (swagger or other)
-
-- Tests
-
-[x] Add logic to manage an event capacity: if event reaches maximum number of registered attendees, an error should be returned to a user trying to register
-
-- Add some  filtering to endpoints retrieving events (e.g. date , type, status, past events, future events, etc)
-
-- Create a frontend to consume the API
+    {
+    "name": "Event A",
+    "description": "Lorem ipsum...",
+    "start_date": "2023-08-15T10:00:00Z",
+    "end_date": "2023-08-17T18:00:00Z",
+    "max_attendees": 150
+    }
