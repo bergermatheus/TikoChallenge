@@ -118,7 +118,7 @@ This API uses JWT (JSON Web Tokens) for authentication. To access protected endp
 - **Method:** POST
 - **Authentication:** No
 - **Parameters:**
-  - `username`: Username of the user (string, required)
+  - `name`: Name of the user (string, required)
   - `email`: Email address of the user (string, required)
   - `password`: Password for the user (string, required)
 
@@ -126,7 +126,7 @@ POST /api/register/
 Content-Type: application/json
 
 {
-"username": "john_doe",
+"name": "john doe",
 "email": "john.doe@example.com",
 "password": "password123"
 }
@@ -147,7 +147,7 @@ POST /api/login/
 Content-Type: application/json
 
 {
-"username": "john_doe",
+"username": "john_doe@test.com",
 "password": "password123"
 }
 
